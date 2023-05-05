@@ -1,0 +1,164 @@
+#!/bin/bash
+canceloperation(){
+if [ $? -ne 0 ];
+then 
+whiptail --msgbox "Operation cancelled" 8 40 --title "$1"
+return
+fi
+
+}
+
+ChangeUserPassword(){
+while true ;
+do 
+USERNAME=$(whiptail --inputbox "Enter your username" 8 70 --title "change password" 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ];
+then 
+whiptail --msgbox "Operation cancelled" 8 40 --title "change password"
+break
+fi
+
+if [ -z $USERNAME ];
+then
+whiptail --msgbox "cannot leave user name empty" 10 40 --title "Error"
+continue
+fi 
+
+PASSWORD=$(whiptail --passwordbox "Enter new password" 8 70 --title "Password" 3>&1 1>&2 2>&3)
+#check cancellation
+if [ $? -ne 0 ];
+then 
+whiptail --msgbox "Operation cancelled" 10 40 --title "add user"
+break
+fi
+
+if [ -z $PASSWORD ];
+then 
+whiptail --msgbox "cannot leave password empty" 10 40 --title "Error"
+continue
+fi
+
+sudo echo $PASSWORD |sudo  passwd --stdin $USERNAME
+whiptail --msgbox "password changed successfuly" 10 40 --title "change password" 8 60
+break
+done
+}
+
+
+#####
+ChangeUserName(){
+while true ;
+do
+OldName=$(whiptail --inputbox "Enter name of the user you want to change: " 8 70 --title "Old name"   3>&1 1>&2 2>&3)
+if [ $? -ne 0 ];
+then 
+whiptail --msgbox "Operation cancelled" 10 40 --title "Change user name"
+break
+else
+if [ -z $OldName ];
+then
+whiptail --msgbox "cannot leave user name empty" 8 40 --title "Errror"
+else
+NewName=$(whiptail --inputbox "Enter new name" 8 70 --title "New Name" 3>&1 1>&2 2>&3)
+
+if [ $? -ne 0 ];
+then
+whiptail --msgbox "Operation cancelled" 10 40 --title "Change user name"
+break
+else
+
+if [ -z $NewName ];
+then
+whiptail --msgbox "cannot leave user name empty" 8 40 --title "Errror"
+else 
+sudo usermod -l $NewName $OldName
+
+if [ $? == 0 ];
+then
+nName=$(awk -F: '{print "User name: " $1 "       User ID: " $3}' /etc/passwd| grep $NewName)
+whiptail --msgbox "success here is your new info\n $nName " 10 50 --title "Success"
+break
+else
+whiptail --msgbox "Error changing the name try again" 8 40 --title "Error"
+fi
+fi
+fi
+fi
+fi
+done
+}
+
+########
+ModifyGroup(){
+while true ;
+do
+USERNAME=$(whiptail --inputbox "Enter your Username" 8 70 --title "Username" 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ];
+then 
+whiptail --msgbox "Operation cancelled" 10 40 --title "Change user group"
+break
+else
+if [ -z $USERNAME ];
+then
+whiptail --msgbox "cannot leave user name empty" 8 40 --title "Errror"
+else
+
+GROUPNAME=$(whiptail --inputbox "Enter New existing Group Name" 8 70 --title "New Group Name" 3>&1 1>&2 2>&3)
+
+if [ $? -ne 0 ];
+then
+whiptail --msgbox "Operation cancelled" 10 40 --title "Change user group"
+break
+else
+
+if [ -z $GROUPNAME ];
+then
+whiptail --msgbox "cannot leave group name empty" 8 40 --title "Errror"
+else 
+
+sudo usermod -g $GROUPNAME $USERNAME
+if [ $? == 0 ];
+then
+#awk -F: '{print "Group name: " $1 "       Group ID: " $3}' /etc/group| grep $GROUPNAME
+groupname=$(id $USERNAME)
+whiptail --msgbox "your new group info \n$groupname" 10 60 --title "success"
+break
+else
+whiptail --msgbox "Error changing the name try again" 8 40 --title "Error"
+fi
+fi
+fi
+fi
+fi
+done
+
+}
+width=40
+height=12
+items=( "1" " Change User Password" \
+        "2" " Change User Name" \
+        "3" " Modify User Primary Group" \
+)
+
+
+
+##Size=$((${#items[@]}/2))
+#while true;
+#do
+CHOICE=$(whiptail --title "Modify User" --menu \
+"Choose an option:" $height $width 3 \
+"${items[@]}" 3>&1 1>&2 2>&3)
+
+#cancel operation
+#if [ $? -ne 0 ];
+#then 
+#whiptail --msgbox "Operation cancelled" 8 40 --title "Modify user"
+#break
+#fi
+
+case $CHOICE in
+1) ChangeUserPassword ;;
+2) ChangeUserName ;;
+3) ModifyGroup ;;
+esac
+#done

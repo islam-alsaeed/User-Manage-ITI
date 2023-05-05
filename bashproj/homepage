@@ -1,0 +1,48 @@
+#!/bin/bash
+#Part 1 - Query for the user's name
+width=70
+hight=20
+items=(	"Add User" " Add user to the system" \
+	"Delete User" " Delete User from the system"\
+	"Modify User" " Modify an existing user info "\
+	"List Users" " List all user on the system"\
+	"Add Group" " Add a user group to the system"\
+	"Delete Group" " Delete a user group from the system"\
+	"Modify Group" " Modify group and its list of members"\
+	"List Groups" " List Groups in the system"\
+	"Disable User Account" " Disable User account on the system" \
+	"Enable User Account" " Enable User account on the system" \
+	"Exit" " End the program"\
+)
+#Size=$((${#items[@]}/2))
+# Use whiptail to create a menu dialog box
+while true;
+do
+CHOICE=$(whiptail --title "Project" --menu \
+"Choose an option:" $hight $width 11 \
+"${items[@]}" 3>&1 1>&2 2>&3)
+
+if [ $? -ne 0 ]; then
+        # Use whiptail to display a message and exit the script
+        whiptail --msgbox "Operation cancelled." 8 40 --title "Message"
+        exit 
+fi
+
+# Display the selected option
+
+case $CHOICE in
+"Add User")		./Adduser;;
+"Delete User")		./deluser;;
+"Modify User")	 	./ModifyUser ;;
+"List Users")		./ListUsers;;
+"Add Group")		./AddGroup;;
+"Delete Group")		./GroupDel;;
+"Modify Group") 	./GroupModify;;
+"List Groups")		./ListGroup;;
+"Disable User Account")	./DisaUAcc;;
+"Enable User Account")	./EnaUAcc;;
+"Exit")			exit ;;
+
+esac
+
+done

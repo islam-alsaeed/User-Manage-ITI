@@ -1,0 +1,26 @@
+#!/bin/bash
+while true ;
+do
+#Get the user input
+
+GROUPNAME=$(whiptail --inputbox "Enter Group name you want to delete" 8 78 --title "Delete Group" 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ]; then
+        # Use whiptail to display a message and exit the script
+        whiptail --msgbox "Operation cancelled." 8 40 --title "Add Group"
+        break
+fi
+if [ -n "$GROUPNAME" ];
+then
+
+sudo groupdel $GROUPNAME
+if [ $? ==  0 ];
+then
+whiptail --msgbox "Group deleted successfully" 8 60 --title "Delete Group"
+break
+else 
+whiptail --msgbox "Group not exist try again" 8 60 --title "Error deleteing group"
+fi
+else
+whiptail --msgbox "Please enter group name" 8 60 --title "Error"
+fi
+done

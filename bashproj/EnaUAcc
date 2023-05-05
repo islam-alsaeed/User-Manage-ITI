@@ -1,0 +1,23 @@
+#!/bin/bash
+while true ;
+do
+USERNAME=$(whiptail --inputbox "Enter username account you want to Enable" 8 78 --title "Enable Account" 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ];
+then
+whiptail --msgbox "Operation cancelled" 8 40 --title "Enable Account"
+break
+fi
+if [ -z $USERNAME ];
+then
+whiptail --msgbox "cannot leave this empty" 8 40 --title "Error"
+else
+sudo usermod -U $USERNAME
+if [ $? == 0 ];
+then
+whiptail --msgbox 'Account Enabled successfuly' 8 40 --title "Enable Account"
+break
+else 
+whiptail --msgbox "Error Enabling Account" 8 40 --title "Error"
+fi
+fi
+done

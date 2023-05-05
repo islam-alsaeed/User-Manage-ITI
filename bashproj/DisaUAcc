@@ -1,0 +1,24 @@
+#!/bin/bash
+while true ;
+do
+USERNAME=$(whiptail --inputbox "Enter username you want to diable" 8 78 --title "Disable account" 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ];
+then
+whiptail --msgbox "Operation cancelled" 8 40 --title "Disable Account"
+break
+fi
+if [ -z $USERNAME ];
+then
+whiptail --msgbox "cannot leave this empty" 8 40 --title "Error"
+else 
+sudo usermod -L $USERNAME
+if [ $? == 0 ];
+then
+whiptail --msgbox "Account disabled successfuly" 8 40 --title "disable Account"
+break
+else 
+whiptail --msgbox "Error disabling Account" 8 40 --title "Error"
+fi
+fi
+done
+

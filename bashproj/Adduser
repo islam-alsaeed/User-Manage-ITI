@@ -1,0 +1,46 @@
+#!/bin/bash
+while true;
+do
+hight=10
+width=60
+
+USERNAME=$(whiptail --inputbox "Enter your username" 8 60 --title "Username" 3>&1 1>&2 2>&3)
+
+if [ $? -ne 0 ];
+then 
+whiptail --msgbox "Operation cancelled" 8 40 --title "Add user"
+break
+fi
+
+if [ -z $USERNAME ];
+then
+whiptail --msgbox "cannot leave user name empty" 10 40 --title "Error"
+continue
+fi 
+
+PASSWORD=$(whiptail --passwordbox "Enter your password" 10 60 --title "Password" 3>&1 1>&2 2>&3)
+#check cancelation
+if [ $? -ne 0 ];
+then 
+whiptail --msgbox "Operation cancelled" 10 40 --title "add user"
+break
+fi
+
+if [ -z $PASSWORD ];
+then 
+whiptail --msgbox "cannot leave password empty" 10 40 --title "Error"
+continue
+fi
+sudo useradd $USERNAME
+
+##check if command errors and user duplication
+if [ $? == 0 ];
+then
+echo $PASSWORD | sudo passwd --stdin $USERNAME
+whiptail --msgbox "user $USERNAME added successfuly" 10 50 --title "add successfull" 
+break
+else
+echo $?
+whiptail --msgbox "User/groupuser of $USERNAME already exist try again" 10 40 --title "Error"
+fi
+done

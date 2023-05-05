@@ -1,0 +1,24 @@
+#!/bin/bash
+while true ;
+do
+#Get the user input
+GROUPNAME=$(whiptail --inputbox "Enter Group name" 8 78 --title "Add Group" 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ]; then
+        # Use whiptail to display a message and exit the script
+        whiptail --msgbox "Operation cancelled." 8 40 --title "Add Group"
+        break
+fi
+if [ -n "$GROUPNAME" ];
+then
+sudo groupadd $GROUPNAME
+if [ $? ==  0 ];
+then
+whiptail --msgbox "Group added successfully" 8 60 --title "Add Group"
+break
+else 
+whiptail --msgbox "Group already exist try again" 8 60 --title "Error adding group"
+fi
+else
+whiptail --msgbox "please enter group name" 8 60 --title "Error"
+fi
+done

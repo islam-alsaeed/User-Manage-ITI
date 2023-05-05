@@ -1,0 +1,26 @@
+#!/bin/bash
+GroupName(){
+        GrOldName=$(whiptail --inputbox "Enter the name of the group you want to Change: " 8 70 --title "Change group Name" 3>&1 1>&2 2>&3)
+        GrNewName=$(whiptail --inputbox "Enter the Group new name" 8 70 --title "Change Group Name" 3>&1 1>&2 2>&3)
+	sudo  groupmod -n $GrNewName $GrOldName
+	echo Group name changed successfuly
+	awk -F: '{print "Group name: " $1 "	Group ID: " $3}' /etc/group |grep $GrNewName
+
+}
+Modify_GID(){
+
+        GrName=$(whiptail --inputbox "Enter the name of the group you want to change: " 8 70 --title "Change Group GID" 3>&1 1>&2 2>&3)
+        NewGID=$(whiptail --inputbox "Enter new Group ID" 8 70 --title "Change Group GID" 3>&1 1>&2 2>&3)
+        sudo groupmod -g $NewGID $GrName 
+	echo Group ID changed successfuly
+	awk -F: '{print "Group name: " $1 "     Group ID: " $3}' /etc/group | grep $NewGID
+}
+
+CHOICE=$(whiptail --title "Modify Group" --menu "Choose an option" 10 70 2 \
+"Modify GID" "   Change group ID" \
+"Group name" "   Change the name of a group"  3>&2 2>&1 1>&3)
+
+case $CHOICE in
+"Group name")	GroupName;;
+"Modify GID")	Modify_GID;;
+esac

@@ -1,0 +1,32 @@
+#!/bin/bash
+while true;
+do
+hight=10
+width=60
+
+USERNAME=$(whiptail --inputbox "Enter your username" 8 60 --title "Delete User" 3>&1 1>&2 2>&3)
+
+if [ $? -ne 0 ];
+then 
+whiptail --msgbox "Operation cancelled" 8 40 --title "Delete user"
+break
+fi
+
+if [ -z $USERNAME ];
+then
+whiptail --msgbox "cannot leave user name empty" 10 40 --title "Error"
+continue
+fi 
+
+sudo userdel -r $USERNAME
+
+##check if command errors and user duplication
+if [ $? == 0 ];
+then
+whiptail --msgbox "user $USERNAME deleted successfuly" 10 50 --title "Delete user" 
+break
+else
+echo $?
+whiptail --msgbox "User/groupuser of $USERNAME not exist try again" 10 40 --title "Error"
+fi
+done
